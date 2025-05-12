@@ -74,6 +74,7 @@ sudo ./cloudwatch-metric-test.sh
 - 운영자 대상 Slack/Email 기반 실시간 경고 연동 구현
 
 ⚒ 사용된 주요 AWS 기술 스택
+
 AWS Chatbot – CloudWatch 알람을 Slack 채널에 자동 전달
 
 Amazon EC2 – Auto Scaling 기반 웹 서버 운영
