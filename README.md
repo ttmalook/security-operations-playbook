@@ -72,3 +72,26 @@ sudo ./cloudwatch-metric-test.sh
 - ISMS-P 인증 대응 시, 로그 수집 및 모니터링 증적 자료로 활용
 - EC2 오토스케일링 환경에서 인스턴스별 CPU 알람 자동화 가능
 - 운영자 대상 Slack/Email 기반 실시간 경고 연동 구현
+
+⚒ 사용된 주요 AWS 기술 스택
+AWS Chatbot – CloudWatch 알람을 Slack 채널에 자동 전달
+
+Amazon EC2 – Auto Scaling 기반 웹 서버 운영
+
+Amazon CloudWatch – 메트릭 수집, 알람 설정, 로그 스트리밍
+
+AWS Lambda – 이벤트 기반 서버리스 함수 실행
+
+Amazon EventBridge – EC2 상태 변경 이벤트 감지
+
+Amazon SNS – 알람 트리거 전달 및 알림 연동
+
+IAM Role – CloudWatch Agent 및 Lambda에 필요한 권한 연결
+
+Slack Webhook – 실시간 경고 전송
+
+# 🙋‍♂️ 작성자
+
+- 백진우 (Jinwoo Baek)
+- GitHub: [ttmalook](https://github.com/ttmalook)
+- 이 프로젝트는 베스핀글로벌 멀티클라우드 전문가 과정 중 실제 수행한 실습 및 과제를 기반으로 구성되었습니다.
