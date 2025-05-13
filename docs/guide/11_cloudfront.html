@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS CloudFront 배포 생성 가이드</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; }
+        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+        ul { margin-bottom: 20px; }
+        .highlight { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+	<h1>AWS S3 정적 웹사이트 호스팅 생성 가이드</h1>
+
+	<h2>html 파일 다운</h2>
+	<A href = "https://naver.me/GAL9tIEb" target = "https://naver.me/GAL9tIEb" >https://naver.me/GAL9tIEb</A>
+
+    <h2>1️⃣ 버킷 생성</h2>
+    <ul>
+        <li>버킷 이름: <code>www.doitdoit.store</code></li>
+        <li>리전: <code>아시아 태평양(서울) ap-northeast-2</code></li>
+        <li>옵션: 기본값 사용</li>
+    </ul>
+
+    <h2>2️⃣ 정적 웹사이트 호스팅 활성화</h2>
+    <ul>
+        <li>정적 웹사이트 호스팅: <strong>활성화</strong></li>
+        <li>호스팅 유형: <code>웹 호스팅</code></li>
+        <li>기본 루트 객체: <code>index.html</code></li>
+    </ul>
+
+    <h2>3️⃣ 퍼블릭 액세스 권한</h2>
+    <p>버킷 정책을 추가하여 퍼블릭 액세스를 허용해야 합니다.</p>
+    <p>아래와 같은 <strong>버킷 정책</strong>을 추가하세요:</p>
+
+    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::www.doitdoit.store/*"
+        }
+    ]
+}</code></pre>
+
+    <p class="highlight">⚠️ 퍼블릭 액세스 차단 설정이 비활성화 되어 있어야 합니다.</p>
+
+    <h2>4️⃣ 웹 파일 업로드</h2>
+    <ul>
+        <li>index.html 등 웹 파일을 버킷에 업로드</li>
+        <li>업로드 후 엔드포인트 URL로 접속 테스트</li>
+    </ul>
+
+    <h1>AWS CloudFront 배포 생성 가이드</h1>
+
+    <h2>1. 일반 설정</h2>
+    <ul>
+        <li>배포 도메인 이름: <code>d1qoogqtvdd0ea.cloudfront.net</code> (자동 생성됨)</li>
+        <li>대체 도메인 이름 (CNAME): <code>www.doitdoit.store</code></li>
+        <li>사용자 정의 SSL 인증서: <code>*.doitdoit.store</code> (AWS Certificate Manager에서 발급) # CloudFront는 글로벌 서비스라 버지니아에 발급 하셔야 합니다 </li>
+        <li>보안 정책: <code>TLSv1.2_2021</code></li>
+        <li>지원되는 HTTP 버전: <code>HTTP/2, HTTP/1.1, HTTP/1.0</code></li>
+    </ul>
+
+    <h2>2. 원본 설정</h2>
+    <ul>
+        <li>원본 1: <code>alb-web-976186257.ap-northeast-2.elb.amazonaws.com</code> (Elastic Load Balancing)</li>
+        <li>원본 2: <code>www.doitdoit.store.s3-website.ap-northeast-2.amazonaws.com</code> (S3 static website)</li>
+        <li>원본 경로 (S3): <code>/index.html</code></li>
+    </ul>
+
+    <p>💡 두 개의 원본이 설정되며, S3 static website는 Failover 용도로 사용합니다.</p>
+
+    <h2>3. 원본 그룹</h2>
+    <ul>
+        <li>원본 그룹 이름: <code>FailOver Group</code></li>
+        <li>원본 포함: ALB + S3 static website</li>
+        <li>장애 조치 기준: <code>400, 403, 404, 416, 500, 502, 503, 504</code></li>
+    </ul>
+
+    <h2>4. 동작 설정</h2>
+    <ul>
+        <li>우선 순위: <code>0</code></li>
+        <li>경로 패턴: <code>* (기본값)</code></li>
+        <li>원본 또는 원본 그룹: <code>FailOver Group</code></li>
+        <li>뷰어 프로토콜 정책: <code>HTTP를 HTTPS로 리디렉션</code></li>
+        <li>캐시 정책: <code>UseOriginCacheControlHeaders-Qu</code></li>
+        <li>원본 요청 정책: <code>Managed-AllViewer</code></li>
+    </ul>
+
+    <h2>5. 추가 설정</h2>
+    <ul>
+        <li>표준 로깅: <strong>Off</strong></li>
+        <li>Cookie logging: <strong>끄기</strong></li>
+        <li>Continuous Deployment: 필요 시 <code>Create staging distribution</code> 클릭</li>
+    </ul>
+
+    <h2>✅ 설정 완료 후</h2>
+    <p>CloudFront 배포가 생성되면, DNS에 CNAME (<code>www.doitdoit.store</code> → <code>별칭 - A - CloudFront로</code>)변경하세요.</p>
+    <p>배포 활성화까지 최대 30분 정도 소요될 수 있습니다.</p>
+
+</body>
+</html>

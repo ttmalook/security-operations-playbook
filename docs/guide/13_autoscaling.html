@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS 오토스케일링 그룹 생성 가이드</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; }
+        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+        pre { background-color: #f4f4f4; padding: 10px; border-radius: 4px; }
+        .highlight { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>AWS 오토스케일링 그룹 생성 가이드</h1>
+
+    <h2>1️⃣ EC2 이미지 (AMI) 생성</h2>
+    <ol>
+        <li>EC2 콘솔 접속 → <strong>인스턴스</strong> 선택</li>
+        <li>이미지를 만들 인스턴스를 선택 → <strong>작업 > 이미지 및 템플릿 > 이미지 생성</strong> 클릭</li>
+        <li>
+            이미지 생성 창에서:
+            <ul>
+                <li>이미지 이름: <code>was-ami</code> (원하는 이름 입력)</li>
+                <li>설명: (선택사항)</li>
+                <li>모든 볼륨 포함 여부 확인</li>
+            </ul>
+        </li>
+        <li>하단 <strong>생성</strong> 클릭 → 이미지 생성 진행 → <strong>AMI 상태가 <span class="highlight">사용 가능</span>이 될 때까지 대기</strong></li>
+    </ol>
+
+    <h2>2️⃣ 시작 템플릿 생성</h2>
+    <ol>
+        <li>EC2 콘솔 → <strong>시작 템플릿</strong> → <strong>템플릿 생성</strong> 클릭</li>
+        <li>
+            기본 정보 입력:
+            <ul>
+                <li>템플릿 이름: <code>was-temp</code></li>
+                <li>설명: (선택사항)</li>
+            </ul>
+        </li>
+        <li>
+            <strong>AMI</strong> 선택:
+            <ul>
+                <li>1단계에서 생성한 AMI 선택 (<code>was-ami</code>)</li>
+            </ul>
+        </li>
+        <li>
+            인스턴스 유형 선택:
+            <ul>
+                <li>예: <code>t3.small</code> 또는 원하는 인스턴스 타입</li>
+            </ul>
+        </li>
+        <li>
+            키 페어 선택 (필요 시)
+        </li>
+        <li>
+            네트워크 설정 보안 그룹만 선택(Was-SG)
+        </li>
+        <li>나머지 기본값 확인 후 <strong>템플릿 생성</strong> 클릭</li>
+    </ol>
+
+    <h2>3️⃣ Auto Scaling 그룹 생성</h2>
+    <ol>
+        <li>EC2 콘솔 → <strong>Auto Scaling 그룹</strong> → <strong>Auto Scaling 그룹 생성</strong> 클릭</li>
+        <li>
+            기본 정보 입력:
+            <ul>
+                <li>Auto Scaling 그룹 이름: <code>was-asg</code></li>
+            </ul>
+        </li>
+        <li>
+            시작 템플릿 선택:
+            <ul>
+                <li>2단계에서 생성한 템플릿 <code>was-temp</code> 선택</li>
+            </ul>
+        </li>
+        <li>버전: 기본 버전 선택</li>
+        <li>
+            네트워크 설정:
+            <ul>
+                <li>VPC 선택</li>
+                <li>서브넷 2개 선택</li>
+            </ul>
+        </li>
+        <li>로드 밸런서 연결 </li>
+        <li>인스턴스 시작 정책: 기본값 사용</li>
+        <li>
+            용량 설정:
+            <ul>
+                <li>원하는 용량: <code>2</code></li>
+                <li>최소 용량: <code>2</code></li>
+                <li>최대 용량: <code>6</code></li>
+            </ul>
+        </li>
+        <li>
+            인스턴스 보호, 인스턴스 유지 관리: 기본값 사용
+        </li>
+        <li>
+            알림 설정: 필요 시 SNS 주제 선택
+        </li>
+        <li>
+            태그 추가 (선택사항)
+        </li>
+        <li><strong>생성</strong> 클릭 → Auto Scaling 그룹 생성 완료</li>
+    </ol>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>CloudWatch Auto Scaling CPU 경보 설정 가이드</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; }
+        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+        pre { background-color: #f4f4f4; padding: 10px; border-radius: 4px; }
+        .highlight { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>CloudWatch를 통한 Auto Scaling CPU 경보 설정 가이드</h1>
+
+    <h2>1️⃣ CloudWatch 콘솔 접속</h2>
+    <ul>
+        <li>AWS 콘솔 → <strong>CloudWatch</strong> → <strong>경보</strong> → <strong>경보 생성</strong> 클릭</li>
+    </ul>
+
+    <h2>2️⃣ 메트릭 선택</h2>
+    <ol>
+        <li><strong>메트릭 선택</strong> 클릭</li>
+        <li><code>EC2</code> → <code>Auto Scaling Group 별</code> → <code>GroupName/CPU Utilization</code> 선택</li>
+        <li>모니터링할 Auto Scaling 그룹 선택</li>
+        <li><code>CPUUtilization</code> 체크 → <strong>메트릭 선택</strong> 클릭</li>
+    </ol>
+
+    <h2>3️⃣ 경보 생성: 스케일 아웃 (확장)</h2>
+    <ol>
+        <li>경보 이름: <code>scale-out-cpu-alarm</code></li>
+        <li>
+            조건:
+            <ul>
+                <li>임계값 유형: <code>Static</code></li>
+                <li>CPU 평균이 <span class="highlight">60%</span> 이상일 때</li>
+                <li>기간: <code>5분</code></li>
+                <li>연속 평가: <code>1</code></li>
+            </ul>
+        </li>
+        <li>다음 클릭 → <strong>알림 (선택사항: SNS)</strong></li>
+        <li>다음 클릭 → <strong>작업 추가</strong></li>
+        <li>
+            작업:
+            <ul>
+                <li>Auto Scaling 작업 실행 → Auto Scaling 그룹 선택</li>
+                <li>확장 작업 선택: <code>인스턴스 1개 추가</code> 또는 원하는 작업</li>
+            </ul>
+        </li>
+        <li>다음 → 검토 → <strong>경보 생성</strong></li>
+    </ol>
+
+    <h2>4️⃣ 경보 생성: 스케일 인 (축소)</h2>
+    <ol>
+        <li>CloudWatch → <strong>경보 생성</strong> 클릭</li>
+        <li>메트릭 선택: 동일한 <code>CPUUtilization</code> 메트릭 선택</li>
+        <li>경보 이름: <code>scale-in-cpu-alarm</code></li>
+        <li>
+            조건:
+            <ul>
+                <li>임계값 유형: <code>Static</code></li>
+                <li>CPU 평균이 <span class="highlight">10%</span> 이하일 때</li>
+                <li>기간: <code>5분</code></li>
+                <li>연속 평가: <code>1</code></li>
+            </ul>
+        </li>
+        <li>다음 → <strong>알림 설정 (선택사항)</strong></li>
+        <li>다음 → <strong>작업 추가</strong></li>
+        <li>
+            작업:
+            <ul>
+                <li>Auto Scaling 작업 실행 → Auto Scaling 그룹 선택</li>
+                <li>축소 작업 선택: <code>인스턴스 1개 제거</code> 또는 원하는 작업</li>
+            </ul>
+        </li>
+        <li>다음 → 검토 → <strong>경보 생성</strong></li>
+    </ol>
+
+    <h2>✅ 참고 사항</h2>
+    <ul>
+        <li>Auto Scaling 그룹의 <strong>확장 정책</strong> 및 <strong>축소 정책</strong>을 미리 생성해두면 작업 연결 가능</li>
+        <li>임계값과 기간은 서비스 특성에 맞게 조정</li>
+        <li>알림 시 SNS 주제를 설정하여 이메일 수신 가능</li>
+    </ul>
+
+    <p>위 단계를 완료하면 CPU 사용률에 따라 Auto Scaling 그룹이 자동으로 스케일 인/아웃되도록 설정됩니다!</p>
+</body>
+</html>
+</body>
+</html>

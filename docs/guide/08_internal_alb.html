@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Apache 웹 서버 프록시 설정 가이드</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; color: #333; }
+        h1 { color: #007acc; }
+        h2 { color: #2c3e50; }
+        pre { background: #f4f4f4; padding: 10px; border-left: 4px solid #007acc; overflow-x: auto; }
+        code { font-family: Consolas, monospace; }
+        .step { margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <h1>🌐 Apache 웹 서버 + Tomcat 프록시 연동 가이드</h1>
+
+    <div class="step">
+        <h2>✅ 1단계. 프록시 설정 추가</h2>
+        <p><code>/etc/apache2/sites-available/000-default.conf</code> 파일을 아래와 같이 수정합니다:</p>
+        <pre><code>sudo nano /etc/apache2/sites-available/000-default.conf</code></pre>
+        <p><strong>&lt;VirtualHost *:80&gt;</strong> 블록 안에 다음을 추가:</p>
+        <pre><code>ProxyPreserveHost On
+ProxyPass /petclinic http://<span style="font-weight: bold; color: red;">alb-was-DNS주소</span>:8080/petclinic
+ProxyPassReverse /petclinic http://<span style="font-weight: bold; color: red;">alb-was-DNS주소</span>:8080/petclinic
+
+RedirectMatch ^/$ /petclinic/</code></pre>
+        <p>🔁 여기서 <span style="font-weight: bold; color: red;">alb-was-DNS주소</span> 은 alb-was의 DNS 주소로 변경합니다.</p>
+    </div>
+
+    <div class="step">
+        <h2>✅ 2단계. 설정 적용 및 포트 확인</h2>
+        <pre><code>sudo systemctl restart apache2</code></pre>
+    </div>
+
+    <div class="step">
+        <h2>✅ 3단계. 접속 테스트</h2>
+        <p>웹 브라우저에서 다음 주소로 접속:</p>
+		<p>alb-web의 DNS 이름을 통하여 접속</p>
+		<p>http://<span style="font-weight: bold; color: red;">alb-web-DNS주소</span>
+		<p>petclinic이 정상적으로 뜬다면 OK</p>
+    </div>
+</body>
+</html>

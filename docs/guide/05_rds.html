@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS RDS(MySQL) 생성 가이드</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; }
+        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+        ul { margin-bottom: 20px; }
+        .highlight { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>RDS - 서브넷 그룹 생성</h1>
+	
+    <h2>1. 서브넷 그룹 생성</h2>
+    <ul>
+        <li>이름 : <code>DB-SG</code></li>
+        <li>VPC : <code>Doit-VPC</code></li>
+        <li>서브넷 : <code>DB 서브넷 영역 2개 (10.0.0.192/26, 10.0.1.192/26)</code></li>
+    </ul>
+
+    <h1>RDS 서비스 생성</h1>
+	
+    <h2>2. 엔진 선택</h2>
+    <p><strong>MySQL Community</strong> 엔진을 선택합니다.</p>
+    <ul>
+        <li>엔진 버전: <code>8.0.40</code></li>
+    </ul>
+	
+	<h2>3. 템플릿</h2>
+    <ul>
+		<li>템플릿: <code>개발/테스트</code></li>
+    </ul>
+	
+	<h2>4. 가용성 및 내구성</h2>
+    <ul>
+		<li>가용성 및 내구성: <code>다중 AZ DB 인스턴스 배포</code></li>
+    </ul>
+
+    <h2>5. 설정</h2>
+    <ul>
+        <li>인스턴스 클래스: <code>db.t3.small</code> (vCPU 2개, RAM 2GB)</li>
+        <li>마스터 사용자 이름: <code>petclinicadmin</code></li>
+        <li>자격 증명 관리 : <code>자체 관리</code></li>
+        <li>마스터 암호: 설정한 암호 입력</li>
+    </ul>
+	
+	<h2>6. 인스턴스 구성</h2>
+    <ul>
+        <li>버스터블 클래스: <code>db.t3.small</code> (vCPU 2개, RAM 2GB)</li>
+    </ul>
+
+    <h2>7. 스토리지 설정</h2>
+    <ul>
+        <li>스토리지 유형: <code>범용 SSD (gp3)</code></li>
+        <li>스토리지 크기: <code>20 GiB</code></li>
+    </ul>
+
+    <h2>8. 연결</h2>
+    <ul>
+        <li>Virtual Private Cloud(VPC): <strong>doit-VPC</strong></li>
+        <li>DB 서브넷 그룹: <strong>DB-SG</strong></li>
+        <li>VPC 보안 그룹(방화벽) <code>Doit-DB</code></li>
+    </ul>
+
+    <h2>9. 모니터링</h2>
+    <ul>
+        <li>모니터링 유형: <code>Database Insights - 표준</code></li>
+        <li>향상된 모니터링: <strong>활성화</strong> (세부 수준: 60초)</li>
+        <li>성능 개선 도구: <strong>비활성화</strong></li>
+    </ul>
+
+    <h2>10. 추가 구성</h2>
+    <p>생성 완료 후 다음을 확인하세요:</p>
+    <ul>
+        <li>DB 이름: <code>petclinic</code></li>
+        <li>자동 백업: 기본값 사용</li>
+        <li>백업 보존 기간: 7일 (기본)</li>
+        <li>유지 관리 창: 기본 설정</li>
+    </ul>
+
+</body>
+</html>

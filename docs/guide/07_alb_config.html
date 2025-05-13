@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS ALB 외부 접속 설정 가이드</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; }
+        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+        pre { background-color: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .highlight { font-weight: bold; color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <h1>1 - AWS 외부 ALB 타겟 그룹 생성</h1>
+    <h2>1. 기본 구성</h2>
+     <ul>
+        <li>이름: <code>Web-TG</code></li>
+        <li>가용 영역: Web 서브넷 2개</li>
+    </ul>
+	
+    <h2>2. 상태 검사</h2>
+     <ul>
+        <li>HTTP 포트 80</li>
+        <li>/index.html</li>
+    </ul>
+	
+    <h1>2 - AWS 외부 ALB 생성</h1>
+    <h2>1. ALB 생성</h2>
+    <p>AWS 콘솔에서 <strong>Application Load Balancer (ALB)</strong>를 생성합니다.</p>
+    <ul>
+        <li>이름: <code>alb-web</code></li>
+        <li>가용 영역: Web 서브넷 2개</li>
+    </ul>
+
+    <h2>2. 네트워크 매핑</h2>
+    <p><strong>VPC</strong></p>
+	<ul>
+        <li>Doit External ALB</li>
+    </ul>
+	
+    <p><strong>HTTP : 80</strong></p>
+	<ul>
+        <li>기본 작업</li>
+		<li>다음으로 전달 : Web-TG</li>
+    </ul>
+	
+	
+    <h1>3 - AWS 내부 ALB 타겟 그룹 생성</h1>
+    <h2>1. 기본 구성</h2>
+     <ul>
+        <li>이름: <code>Was-TG</code></li>
+        <li>가용 영역: Was 서브넷 2개</li>
+    </ul>
+	
+    <h2>2. 상태 검사</h2>
+     <ul>
+        <li>HTTP 포트 8080</li>
+        <li>/petclinic/</li>
+    </ul>
+	
+    <h1>4 - AWS 내부 ALB 생성</h1>
+    <h2>1. ALB 생성</h2>
+    <p>AWS 콘솔에서 <strong>Application Load Balancer (ALB)</strong>를 생성합니다.</p>
+    <ul>
+        <li>이름: <code>alb-was</code></li>
+        <li>가용 영역: was 서브넷 2개</li>
+    </ul>
+
+    <h2>2. 네트워크 매핑</h2>
+    <p><strong>VPC</strong></p>
+	<ul>
+        <li>Doit Internal ALB</li>
+    </ul>
+	
+    <p><strong>HTTP : 8080</strong></p>
+	<ul>
+        <li>기본 작업</li>
+		<li>다음으로 전달 : Was-TG</li>
+    </ul>
+</body>
+</html>

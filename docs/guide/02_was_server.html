@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<title>🛠️ 우분투 Tomcat 설치 및 실행 가이드</title>
+<style>
+        body { font-family: "Pretendard", sans-serif; line-height: 1.6; padding: 20px; background-color: #f9f9f9; color: #333; }
+        h1 { color: #007acc; }
+        h2 { color: #2d5aa7; }
+        pre { background-color: #efefef; padding: 10px; border-left: 4px solid #007acc; overflow-x: auto; }
+        code { font-family: monospace; }
+        .tip { background-color: #fff3cd; border-left: 4px solid #ffecb5; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+<h1>🛠️ Ubuntu에서 Apache Tomcat 설치 및 실행 가이드</h1>
+<p>이 문서는 EC2 우분투 서버에 Tomcat을 설치하고 실행하는 전체 과정을 초보자도 쉽게 따라할 수 있도록 설명합니다.</p>
+<h2>1단계. Java 설치</h2>
+<pre><code>sudo apt update
+sudo apt install openjdk-11-jdk -y
+java -version</code></pre>
+<h2>2단계. 환경변수 설정</h2>
+<pre><code>echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' &gt;&gt; ~/.bashrc
+echo 'export PATH=$JAVA_HOME/bin:$PATH' &gt;&gt; ~/.bashrc
+source ~/.bashrc</code></pre>
+<h2>3단계. Tomcat 다운로드 및 설치</h2>
+<pre><code>cd /opt
+sudo wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.84/bin/apache-tomcat-9.0.84.tar.gz
+sudo tar -xvzf apache-tomcat-9.0.84.tar.gz
+sudo mv apache-tomcat-9.0.84 tomcat9
+sudo chown -R $USER:$USER /opt/tomcat9</code></pre>
+<h2>4단계. Tomcat 실행</h2>
+<pre><code>cd /opt/tomcat9/bin
+./startup.sh</code></pre>
+<p>성공 메시지 예시: <code>Tomcat started.</code></p>
+<h2>5단계. 사용자 계정 설정</h2>
+<p><code>/opt/tomcat9/conf/tomcat-users.xml</code> 파일을 아래와 같이 수정합니다.</p>
+<pre><code>&lt;role rolename="manager-script"/&gt;
+&lt;role rolename="manager-gui"/&gt;
+&lt;role rolename="manager-jmx"/&gt;
+&lt;role rolename="manager-status"/&gt;
+&lt;user username="tomcat" password="tomcat" roles="manager-gui,manager-script,manager-status,manager-jmx"/&gt;</code></pre>
+<h2>6단계. Tomcat 접속 확인</h2>
+<p>웹 브라우저에서 다음 주소를 입력하여 접속을 확인합니다:</p>
+<pre><code>curl -I localhost:8080</code></pre>
+<p>HTTP 200 OK가 뜨면 정상.</p>
+<div class="tip">
+<strong>🔧 자주 발생하는 오류 및 해결</strong><br/>
+<ul>
+<li><strong>JAVA_HOME 오류:</strong> 환경 변수 설정이 누락됨 → ~/.bashrc 확인</li>
+<li><strong>Connection Refused:</strong> Tomcat 사용자 계정 누락 또는 포트 8080 미개방</li>
+<li><strong>404 Not Found:</strong> Tomcat 다운로드 URL이 만료 → <a href="https://archive.apache.org/dist/tomcat/">Tomcat Archive</a>에서 다른 버전 선택</li>
+</ul>
+</div>
+<section><h2>📦 7단계. Tomcat 배포 (H2 In-memory Database 활용)</h2>
+<p>다음 명령어를 통해 Tomcat에 PetClinic을 배포합니다.</p>
+<pre><code>
+cd /opt/tomcat9/conf/
+git clone https://github.com/SteveKimbespin/petclinic_btc.git
+cd petclinic_btc
+./mvnw tomcat7:deploy
+</code></pre>
+</html>

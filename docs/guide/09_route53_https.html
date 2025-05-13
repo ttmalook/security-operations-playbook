@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS Route 53 호스팅 영역 생성 가이드</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; }
+        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+        ul { margin-bottom: 20px; }
+        .highlight { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>1 - AWS Route 53 호스팅 영역 생성 가이드</h1>
+
+    <h2>1. Route 53 콘솔 접속</h2>
+    <p>AWS Route 53 콘솔에서 좌측 메뉴에서 <strong>"호스팅 영역"</strong>을 클릭합니다.</p>
+
+    <h2>2. 호스팅 영역 생성 클릭</h2>
+    <p>"호스팅 영역 생성(Create hosted zone)" 버튼을 클릭합니다.</p>
+
+    <h2>3. 도메인 이름 입력</h2>
+    <ul>
+        <li><strong>도메인 이름(Domain name)</strong>: 등록한 도메인을 입력 (예: <code>example.com</code>)</li>
+        <li><strong>유형(Type)</strong>: <code>공개 호스팅 영역(Public hosted zone)</code> 선택</li>
+    </ul>
+
+    <h2>4. 생성 완료 및 NS, SOA 레코드 확인</h2>
+    <p>생성이 완료되면 기본적으로 다음 레코드가 자동 생성됩니다:</p>
+    <ul>
+        <li><code>NS (Name Server)</code> 레코드 → 도메인 등록기관에 설정할 네임서버 목록</li>
+        <li><code>SOA (Start of Authority)</code> 레코드</li>
+    </ul>
+
+    <h2>5. 도메인 등록기관에 네임서버 설정</h2>
+    <p>Route 53에서 생성된 <strong>NS 레코드의 값/트래픽 라우팅 대상</strong>의 4가지 항목 모두를 도메인을 등록한 사이트 가비아에 접속하여 네임서버로 등록합니다.</p>
+
+    <h1>2 - AWS Certificate Manager 인증서 생성 방법 (HTTPS 인증서)</h1>
+	
+	<h2>1. AWS Certificate Manager 콘솔 접속</h2>
+    <p>자신이 원하는 리전에 <strong>인증서 요청</strong>을 클릭합니다.</p>
+	
+	<h2>2. 인증서 유형</h2>
+    <p>퍼블릭 인증서 요청을 그대로 선택 한 채, 다음을 누릅니다</p>
+	
+	<h2>3. 도메인 이름</h2>
+    <p>완전히 정규화된 도메인 이름</p>
+	<p>*.doitdoit.store 처럼 자신이 Route 53에 등록한 도메인 앞에 *을 반드시 붙여 줍니다.</p>
+	<p>나머지는 모두 그대로 하고 요청을 누릅니다.</p>
+	
+	<h2>4. 도메인</h2>
+    <p>Route 53에서 레코드 생성을 누릅니다.</p>
+    <p>하나의 항목이 보인다면 그대로 레코드 생성합니다.</p>
+	<p>안보인다면, 해당 도메인에 이미 인증서가 있을 확률이 높습니다.</p>
+</body>
+</html>

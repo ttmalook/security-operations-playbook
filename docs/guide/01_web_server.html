@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Apache 웹 서버 프록시 설정 가이드</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; color: #333; }
+        h1 { color: #007acc; }
+        h2 { color: #2c3e50; }
+        pre { background: #f4f4f4; padding: 10px; border-left: 4px solid #007acc; overflow-x: auto; }
+        code { font-family: Consolas, monospace; }
+        .step { margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <h1>🌐 Apache 웹 서버 설치 가이드</h1>
+    <div class="step">
+        <h2>✅ 1단계. Apache 설치</h2>
+        <pre><code>sudo apt update
+sudo apt install apache2 -y</code></pre>
+        <p>설치 후 서비스 상태 확인:</p>
+        <pre><code>sudo systemctl status apache2</code></pre>
+        <p><strong>✅ active (running)</strong> 이라고 나오면 정상입니다.</p>
+    </div>
+	
+        <h2>✅ 2단계. Apache2 정상 배포 확인</h2>
+        <pre><code>curl -I localhost:80</code></pre>
+        <p>HTTP 200 OK 가 뜨면 정상</p>
+		
+        <h2>✅ 3단계. Apache2 시스템 데몬 서비스 등록 (서버 재시작 시 실행 되게)</h2>
+        <pre><code>sudo systemctl start apache2
+sudo systemctl enable apache2</code></pre>
+    </div>
+</body>
+</html>

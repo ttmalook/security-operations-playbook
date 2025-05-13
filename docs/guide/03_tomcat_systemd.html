@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Tomcat systemd 서비스 등록 가이드</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }
+        h1, h2, h3 { color: #333; }
+        pre { background: #f4f4f4; padding: 10px; border: 1px solid #ccc; overflow-x: auto; }
+        code { background: #eee; padding: 2px 4px; border-radius: 4px; }
+        .note { background: #ffffcc; padding: 10px; border: 1px solid #cccc99; }
+    </style>
+</head>
+<body>
+
+<h2>1. systemd 서비스 파일 작성</h2>
+<p><code>/etc/systemd/system/tomcat.service</code> 경로에 서비스 파일을 생성합니다.</p>
+<pre><code>sudo vi /etc/systemd/system/tomcat.service</code></pre>
+<p>아래 내용을 작성하세요:</p>
+<pre><code>[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
+
+[Service]
+Type=forking
+
+User=tomcat
+Group=tomcat
+
+Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64"
+Environment="CATALINA_PID=/opt/tomcat9/temp/tomcat.pid"
+Environment="CATALINA_HOME=/opt/tomcat9"
+Environment="CATALINA_BASE=/opt/tomcat9"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+Environment="JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom"
+
+ExecStart=/opt/tomcat9/bin/startup.sh
+ExecStop=/opt/tomcat9/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+<div class="note">
+⚠️ <strong>JAVA_HOME 경로는 실제 설치된 Java 버전에 맞게 수정하세요.</strong><br>
+예: <code>/usr/lib/jvm/java-17-openjdk-amd64</code>
+</div>
+
+<h2>2. systemd 설정 리로드</h2>
+<pre><code>sudo systemctl daemon-reload</code></pre>
+
+<h2>3. Tomcat 서비스 시작 및 부팅 시 자동실행 설정</h2>
+<pre><code>sudo systemctl start tomcat
+sudo systemctl enable tomcat</code></pre>
+
+<h2>4. 상태 확인</h2>
+<pre><code>sudo systemctl status tomcat</code></pre>
+<p><strong>✅ <code>active (running)</code> 상태인지 확인하세요.</strong></p>
+
+</body>
+</html>

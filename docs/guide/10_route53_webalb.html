@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS Route 53 호스팅 영역 생성 가이드</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; }
+        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+        ul { margin-bottom: 20px; }
+        .highlight { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>1 - AWS Route 53 레코드 생성</h1>
+
+    <h2>1. Route 53 콘솔 접속</h2>
+    <p>AWS Route 53 콘솔에서 좌측 메뉴에서 <strong>"호스팅 영역"</strong>을 클릭합니다.</p>
+	<p>생성한 호스팅 영역을 클릭하고, 들어갑니다.</p>
+
+    <h2>2. Route 53 콘솔 접속</h2>
+    <p>레코드 생성을 누르고, 레코드 이름에 www를 입력합니다.</p>
+	<p>레코드 유형은 A 타입을 그대로 사용합니다.</p>
+	<p>별칭 옆에 스위치를 눌러 ON 시켜 줍니다.</p>
+	<p>라우팅 대상을 Application/Classic Load Balancer에 대한 별칭을 누릅니다.</p>
+	<p>연습한 리전을 선택합니다.</p>
+	<p>web-alb를 누른 후, 레코드 생성을 누릅니다.</p>
+
+    <h1>2 - ALB 리스너 HTTPS 인증서 설정</h1>
+
+    <h2>1. EC2 - 로드 밸런서 alb-web를 누릅니다.</h2>
+	<h2>2. 리스너 및 규칙 변경</h2>
+	<p>모든 리스너를 삭제하고, 리스너 추가를 누릅니다.</p>
+	<p>HTTPS/443를 선택하고, 대상 그룹을 Web-TG로 바꿔줍니다.</p>
+	<h2>3. 보안 리스너 설정</h2>
+	<p>정책 이름은 기본을 둡니다. (ELBSecurityPolicy-TLS1.3...)</p>
+	<p>인증서 소스를 ACM에서 클릭하고, 작성한 인증서를 선택해줍니다. (*.doitdoit.store CNAME 도메인 주소)</p>
+	<p>그대로 추가 합니다.</p>
+	<h2>4. HTTP 리스너 추가</h2>
+	<p>HTTPS에 대한 리스너 추가 후, HTTP로 접속하는 클라이언트들을 HTTPS로 전환 하는 리스너를 추가합니다.</p>
+	<p>HTTP/80을 선택하고 라우팅 액션에서 URL로 리디렉션을 누릅니다</p>
+	<p>전체 URL을 눌렀을 때, https://#{host}:443/#{path}?#{query} 내용이 있다면 그대로 추가를 누릅니다.</p>
+	
+    <h1>3 - 인증서 정상 작동 확인</h1>
+
+    Route 53에 본인이 등록한 도메인 레코드로 접속하여, 예시) www.doitdoit.stor
+	주소입력창 옆에 자물쇠 모양이 닫혀있다면, 설정이 완료 됐습니다.
+</body>
+</html>

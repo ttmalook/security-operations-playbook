@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<title>Spring PetClinic MySQL 연동 가이드</title>
+<style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; background-color: #f9f9f9; padding: 20px; }
+        h1, h2, h3 { color: #2c3e50; }
+        pre { background: #f4f4f4; padding: 10px; border-left: 4px solid #4db6ac; overflow-x: auto; }
+        code { font-family: Consolas, monospace; }
+        .section { margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+<div class="section">
+<h2>1. JDBC 설정</h2>
+<p>Spring 애플리케이션에서 MySQL과 연동을 위해 다음 설정을 <code>pom.xml</code>의 <code>&lt;properties&gt;</code> 섹션에 추가:</p>
+<pre><code>&lt;properties&gt;
+    &lt;jpa.database&gt;MYSQL&lt;/jpa.database&gt;
+    &lt;jdbc.driverClassName&gt;com.mysql.cj.jdbc.Driver&lt;/jdbc.driverClassName&gt;
+    &lt;jdbc.url&gt;jdbc:mysql://<span style="font-weight: bold; color: red;">CHANGE-ME-RDS-DNS</span>:3306/petclinic?useUnicode=true&amp;characterEncoding=UTF-8&lt;/jdbc.url&gt;
+    &lt;jdbc.username&gt;<span style="font-weight: bold; color: red;">CHANGE-ME-RDS-MASTER-ID</span>&lt;/jdbc.username&gt;
+    &lt;jdbc.password&gt;<span style="font-weight: bold; color: red;">CHANGE-ME-RDS-MASTER-PASSWORD</span>&lt;/jdbc.password&gt;
+&lt;/properties&gt;</code></pre>
+</div>
+<div class="section">
+<h2>2. MySQL JDBC 드라이버 의존성 추가</h2>
+<p><code>pom.xml</code>의 <code>&lt;dependencies&gt;</code>에 아래 블록 추가:</p>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;mysql&lt;/groupId&gt;
+    &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+    &lt;version&gt;<span style="font-weight: bold; color: red;">8.0.33</span>&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+<div class="section">
+<h2>3. 빌드 및 배포</h2><div>
+<p>Maven 빌드 전에 먼저 Maven 설치 및 버전 확인을 진행하세요:</p>
+<pre><code>sudo apt update
+sudo apt install maven -y
+mvn -v
+cd /opt/tomcat9/conf/petclinic_btc
+</code></pre>
+<p>그 후 빌드 및 WAR 재배포를 실행합니다:</p>
+<pre><code>mvn clean install
+./mvnw tomcat7:redeploy -P MySQL
+</code></pre>
+</div>
+
+
+</div>
+<div class="section">
+<h2>✅ 마무리 점검</h2>
+<pre><code>sudo apt update
+sudo apt install mysql-client</code></pre>
+설치 완료 후
+<pre><code>mysql -u <span style="font-weight: bold; color: red;">'Master-ID'</span></code> -p'<span style="font-weight: bold; color: red;">Master-Password</span>' -h '<span style="font-weight: bold; color: red;">RDS-DNS 주소</span>'</pre>
+mysql > 뜬다면
+<pre><code>use petclinic;
+select * from onwers;</span>'</pre>
+<p>onwers 테이블에서 데이터가 생성 되어 있다면, 정상 배포</p>
+
+<p>mysql > 안뜬다면 </p>
+<p>아이디, 비밀번호, 보안그룹 확인 필요. 순차적으로 확인</p>
+</div>
+</body>
+</html>
