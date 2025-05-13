@@ -91,6 +91,24 @@ IAM Role – CloudWatch Agent 및 Lambda에 필요한 권한 연결
 
 Slack Webhook – 실시간 경고 전송
 
+## 📘 전체 구축 가이드 문서
+
+아래 문서는 EC2 인프라 전체 구성 요소에 대한 HTML 기반 운영 가이드입니다:
+
+- [01. Web 서버 구성](docs/guide/01_web_server.html)
+- [02. WAS 서버 구성](docs/guide/02_was_server.html)
+- [03. Tomcat 서비스 등록](docs/guide/03_tomcat_systemd.html)
+- [04. Web-WAS 연동 구성](docs/guide/04_web_was_proxy.html)
+- [05. RDS 구성](docs/guide/05_rds.html)
+- [06. DB 접근 제어 및 보안](docs/guide/06_db_security.html)
+- [07. ALB 설정](docs/guide/07_alb_config.html)
+- [08. 내부 ALB 구성](docs/guide/08_internal_alb.html)
+- [09. Route 53 + HTTPS 연동](docs/guide/09_route53_https.html)
+- [10. Route 53 + Web ALB 구성](docs/guide/10_route53_webalb.html)
+- [11. CloudFront 설정](docs/guide/11_cloudfront.html)
+- [12. EFS 마운트 구성](docs/guide/12_efs_mount.html)
+- [13. Auto Scaling 설정](docs/guide/13_autoscaling.html)
+
 # 🙋‍♂️ 작성자
 
 - 백진우 (Jinwoo Baek)
